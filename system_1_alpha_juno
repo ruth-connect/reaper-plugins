@@ -1,0 +1,496 @@
+desc: System 1 controls send SysEx to Alpha Juno
+slider1:gain_db=0<-150,12,1>gain (dB)
+
+in_pin:none
+out_pin:none
+
+@init
+
+// Set up Alpha Juno SysEx codes.
+buf[0] = 0xf0;
+buf[1] = 0x41;
+buf[2] = 0x36;
+buf[3] = 0x00;
+buf[4] = 0x23;
+buf[5] = 0x20;
+buf[6] = 0x01;
+buf[9] = 0xf7;
+
+@block
+
+while (
+  midirecv(mpos, msg1, msg2, msg3) ? (
+  
+    // MIDI controller?
+    (msg1 == 0xB0) ? (
+    
+      // 00 - DCO Env. Mode (0=Normal, 1=Inverted, 2=Normal-Dynamic, 3=Inv.-Dynamic)
+      // System 1 - LFO - Waveform
+      (msg2 == 0x23) ? (
+        buf[7] = 0x00;
+        
+        // 0 - Normal
+        (msg3 == 0x00) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 1 - Inverted
+        (msg3 == 0x19) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 2 - Normal-Dynamic
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 3 - Inverted-Dynamic
+        (msg3 == 0x4C) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 01 - VCF Env. Mode (0=Normal, 1=Inverted, 2=Normal-Dynamic, 3=Dynamic)
+      // System 1 - DCO 1 - Mod
+      (msg2 == 0x3C) ? (
+        buf[7] = 0x01;
+        
+        // 0 - Normal
+        (msg3 == 0x00) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 1 - Inverted
+        (msg3 == 0x19) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 2 - Normal-Dynamic
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 3 - Dynamic
+        (msg3 == 0x4C) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 02 - VCA Env. Mode (0=Normal, 1=Gate, 2=Normal-Dynamic, 3=Gate-Dynamic)
+      // System 1 - OSC 2 - Mod
+      (msg2 == 0x3F) ? (
+        buf[7] = 0x02;
+        
+        // 0 - Normal
+        (msg3 == 0x00) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 1 - Inverted
+        (msg3 == 0x19) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 2 - Normal-Dynamic
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 3 - Dynamic
+        (msg3 == 0x4C) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 03 - DCO Wave Pulse (0..3)
+      // System 1 - OSC 1 - Waveform
+      (msg2 == 0x2E) ? (
+        buf[7] = 0x03;
+        
+        // Pulse 0
+        (msg3 == 0x00) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Pulse 1
+        (msg3 == 0x19) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Pulse 2
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Pulse 3
+        (msg3 == 0x4C) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 04 - DCO Wave Saw (0..5)
+      // System 1 - OSC 2 - Waveform
+      (msg2 == 0x3D) ? (
+        buf[7] = 0x04;
+        
+        // Saw 0
+        (msg3 == 0x00) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Saw 1
+        (msg3 == 0x19) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Saw 2
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Saw 3
+        (msg3 == 0x4C) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Saw 4
+        (msg3 == 0x66) ? (
+          buf[8] = 4;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Saw 5
+        (msg3 == 0x7F) ? (
+          buf[8] = 5;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 05 - DCO Wave Sub (0..5)
+      // System 1 - OSC 2 - Mod
+      (msg2 == 0x3E) ? (
+        buf[7] = 0x05;
+        
+        // Sub 0
+        (msg3 == 0x00) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Sub 1
+        (msg3 == 0x19) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Sub 2
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Sub 3
+        (msg3 == 0x4C) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Sub 4
+        (msg3 == 0x66) ? (
+          buf[8] = 4;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // Sub 5
+        (msg3 == 0x7F) ? (
+          buf[8] = 5;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 06 - DCO Range (0=4', 1=8', 2=16', 3=32')
+      // System 1 - OSC 1 range
+      (msg2 == 0x2F) ? (
+        buf[7] = 0x06;
+        
+        // 4 ft
+        (msg3 == 0x66) ? (
+          buf[8] = 0;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 8 ft
+        (msg3 == 0x4C) ? (
+          buf[8] = 1;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 16 ft
+        (msg3 == 0x33) ? (
+          buf[8] = 2;
+          midisend_buf(mpos, buf, 10);
+        );
+        
+        // 32 ft
+        (msg3 == 0x19) ? (
+          buf[8] = 3;
+          midisend_buf(mpos, buf, 10);
+        );
+      );
+      
+      // 07 - DCO Sub Level (0..3)
+      // System 1 - Mixer - Sub Osc
+      (msg2 == 0x12) ? (
+        buf[7] = 0x07;
+        buf[8] = msg3 >> 5;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 08 - DCO Noise Level (0..3)
+      // System 1 - Mixer - Noise
+      (msg2 == 0x13) ? (
+        buf[7] = 0x08;
+        buf[8] = msg3 >> 5;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 09 - HPF Cutoff (0..3)
+      // System 1 - Mixer - Noise
+      (msg2 == 0x4F) ? (
+        buf[7] = 0x09;
+        buf[8] = msg3 >> 5;
+        midisend_buf(mpos, buf, 10);
+      );
+    
+      // 0A - Chorus Switch (0=Off, 1=On)
+      // System 1 - OSC2 - Sync     
+      (msg2 == 0x70) ? (
+        buf[7] = 0x0A;
+        buf[8] = msg3 >> 6;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 0B - DCO LFO Mod. (0..7F)
+      // System 1 - LFO - Pitch      
+      (msg2 == 0x1A) ? (
+        buf[7] = 0x0B;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 0C - DCO ENV Mod. (0..7F)
+      // System 1 - Pitch - Env
+      (msg2 == 0x16) ? (
+        buf[7] = 0x0C;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 0D - DCO After Mod. (0..7F)
+      // System 1 - OSC 1 - Color
+      (msg2 == 0x32) ? (
+        buf[7] = 0x0D;
+        buf[8] = msg3 >> 3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 0E - DCO PWM Depth (0..7F)
+      // System 1 - OSC 2 - Color
+      (msg2 == 0x37) ? (
+        buf[7] = 0x0E;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 0F - DCO PWM Rate (0..7F) 0 = Pulse Width Manual 1..7F = PW LFO Rate
+      // System 1 - OSC 2 - Tune
+      (msg2 == 0x38) ? (
+        buf[7] = 0x0F;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 10 - VCF Cutoff (0..7F)
+      // System 1 - Filter - Cutoff
+      (msg2 == 0x03) ? (
+        buf[7] = 0x10;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 11 - VCF Resonance (0..7F)
+      // System 1 - Filter - Reso
+      (msg2 == 0x09) ? (
+        buf[7] = 0x11;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 12 - VCF LFO Mod. (0..7F)
+      // System 1 - LFO - Filter
+      (msg2 == 0x1C) ? (
+        buf[7] = 0x12;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 13 - VCF ENV Mod. (0..7F)
+      // System 1 - Filter - Env
+      (msg2 == 0x51) ? (
+        buf[7] = 0x13;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 14 - VCF Key Follow (0..0F)
+      // System 1 - Filter - Key
+      (msg2 == 0x52) ? (
+        buf[7] = 0x14;
+        buf[8] = msg3 >> 3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 15 - VCF Aftertouch (0..0F)
+      // System 1 - Pitch - A
+      (msg2 == 0x17) ? (
+        buf[7] = 0x15;
+        buf[8] = msg3 >> 3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 16 - VCA Level (0..7F)
+      // System 1 - Amp - Tone
+      (msg2 == 0x45) ? (
+        buf[7] = 0x16;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 17 - VCA Aftertouch (0..0F)
+      // System 1 - Pitch - D
+      (msg2 == 0x18) ? (
+        buf[7] = 0x17;
+        buf[8] = msg3 >> 3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 18 - LFO Rate (0..7F)
+      // System 1 - LFO - Rate
+      (msg2 == 0x1D) ? (
+        buf[7] = 0x18;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 19 - LFO Delay (0..7F)
+      // System 1 - LFO - Fade Time
+      (msg2 == 0x1B) ? (
+        buf[7] = 0x19;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 1A - ENV T1 (0..7F) Attack Time
+      // System 1 - Filter - Attack
+      (msg2 == 0x53) ? (
+        buf[7] = 0x1A;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 1B - ENV T1 (0..7F) Attack Level
+      // System 1 - Amp - Attack
+      (msg2 == 0x59) ? (
+        buf[7] = 0x1B;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 1C - ENV T2 (0..7F) Break Time
+      // System 1 - Filter - Decay
+      (msg2 == 0x54) ? (
+        buf[7] = 0x1C;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 1D - ENV L2 (0..7F) Break Level
+      // System 1 - Amp - Decay
+      (msg2 == 0x5A) ? (
+        buf[7] = 0x1D;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 1E - ENV T3 (0..7F) Decay Time
+      // System 1 - Filter - Sustain
+      (msg2 == 0x55) ? (
+        buf[7] = 0x1E;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 1F - ENV L3 (0..7F) Sustain Level
+      // System 1 - Amp - Sustain
+      (msg2 == 0x60) ? (
+        buf[7] = 0x1F;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 20 - ENV T4 (0..7F) Release Time
+      // System 1 - Filter - Release
+      (msg2 == 0x56) ? (
+        buf[7] = 0x20;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 21 - ENV Key Follow (0..0F)
+      // System 1 - Amp - Release
+      (msg2 == 0x61) ? (
+        buf[7] = 0x21;
+        buf[8] = msg3 >> 3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 22 - Chorus Rate (0..7F)
+      // System 1 - Effects - Delay Time
+      (msg2 == 0x0D) ? (
+        buf[7] = 0x22;
+        buf[8] = msg3;
+        midisend_buf(mpos, buf, 10);
+      );
+      
+      // 23 - Bender Range (0..0C)
+      // System 1 - Portamento
+      (msg2 == 0x05) ? (
+        buf[7] = 0x23;
+        buf[8] = (msg3 * 13) >> 7;
+        midisend_buf(mpos, buf, 10);
+      );
+    );
+    
+    midisend(mpos, msg1, msg2, msg3);
+  );
+);
